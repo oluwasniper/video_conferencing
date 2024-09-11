@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      header {
+        background-color: #333;
+        color: white;
+        text-align: center;
+        padding: 10px;
+      }
+      video {
+        width: 100vw; /* Changed vh to vw for better video scaling */
+        height: auto;
+      }
+      footer {
+        background-color: #333;
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+        padding: 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <header>Video Conferencing</header>
+    <div>
+      <video id="localVideo" autoplay></video>
+      <video id="remoteVideo" autoplay></video>
+      <video id="camera" autoplay></video>
+    </div>
+    <footer>
+      <button id="startMeeting">Start meeting</button>
+      <button id="endMeeting">End meeting</button>
+    </footer>
+
+    <script src="script.js"></script>
+    <script>
+      document
+        .getElementById("startMeeting")
+        .addEventListener("click", async () => {
+          try {
+            const stream = await navigator.mediaDevices.getUserMedia({
+              video: true,
+              audio: true,
+            });
+            const video = document.getElementById("camera");
+            video.srcObject = stream;
+          } catch (error) {
+            console.error("Error accessing media devices.", error);
+          }
+        });
+
+      document.getElementById("endMeeting").addEventListener("click", () => {
+        const video = document.getElementById("camera");
+        const stream = video.srcObject;
+        if (stream) {
+          const tracks = stream.getTracks();
+          tracks.forEach((track) => track.stop());
+        }
+        video.srcObject = null;
+      });
+
+      window.onload = () => {
+        console.log("Meeting has started"); // Updated for proper logging
+      };
+    </script>
+  </body>
+</html>
